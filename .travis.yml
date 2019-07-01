@@ -60,19 +60,31 @@ script:
         if [ "${PHPCS}" == "latest" ] && [ "${PHP}" == "latest" ]; then
           while ! make push TAG="latest-${TRAVIS_TAG}"; do sleep 1; done;
         else
-          while ! make push TAG="${PHPCS}-php${PHP}-${TRAVIS_TAG}"; do sleep 1; done;
+          if [ "${PHP}" == "latest" ]; then
+            while ! make push TAG="${PHPCS}-${TRAVIS_TAG}"; do sleep 1; done;
+          else
+            while ! make push TAG="${PHPCS}-php${PHP}-${TRAVIS_TAG}"; do sleep 1; done;
+          fi
         fi
       elif [ "${TRAVIS_BRANCH}" == "master" ]; then
         if [ "${PHPCS}" == "latest" ] && [ "${PHP}" == "latest" ]; then
           while ! make push TAG=latest; do sleep 1; done;
         else
-          while ! make push TAG=${PHPCS}-php${PHP}; do sleep 1; done;
+          if [ "${PHP}" == "latest" ]; then
+            while ! make push TAG=${PHPCS}; do sleep 1; done;
+          else
+            while ! make push TAG=${PHPCS}-php${PHP}; do sleep 1; done;
+          fi
         fi
       elif [[ ${TRAVIS_BRANCH} =~ ^(release-[.0-9]+)$ ]]; then
         if [ "${PHPCS}" == "latest" ] && [ "${PHP}" == "latest" ]; then
           while ! make push TAG="latest-${TRAVIS_BRANCH}"; do sleep 1; done;
         else
-          while ! make push TAG="${PHPCS}-php${PHP}-${TRAVIS_BRANCH}"; do sleep 1; done;
+          if [ "${PHP}" == "latest" ]; then
+            while ! make push TAG="${PHPCS}-${TRAVIS_BRANCH}"; do sleep 1; done;
+          else
+            while ! make push TAG="${PHPCS}-php${PHP}-${TRAVIS_BRANCH}"; do sleep 1; done;
+          fi
         fi
       else
         echo "Skipping branch ${TRAVIS_BRANCH}";
