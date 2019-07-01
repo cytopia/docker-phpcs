@@ -97,35 +97,6 @@ _test-php-version:
 	fi; \
 	echo "Success"; \
 
-_test-tg-version:
-	@echo "------------------------------------------------------------"
-	@echo "- Testing correct Terragrunt version"
-	@echo "------------------------------------------------------------"
-	@if [ "$(TG_VERSION)" = "latest" ]; then \
-		echo "Fetching latest version from GitHub"; \
-		LATEST="$$( \
-			curl -L -sS https://github.com/gruntwork-io/terragrunt/releases \
-			| tac | tac \
-			| grep -Eo '/v[.0-9]+/' \
-			| grep -Eo 'v[.0-9]+' \
-			| sort -u \
-			| sort -V \
-			| tail -1 \
-		)"; \
-		echo "Testing for latest: $${LATEST}"; \
-		if ! docker run --rm $(IMAGE) terragrunt --version | grep -E "^terragrunt[[:space:]]*version[[:space:]]*v?$${LATEST}$$"; then \
-			echo "Failed"; \
-			exit 1; \
-		fi; \
-	else \
-		echo "Testing for tag: $(TG_VERSION)"; \
-		if ! docker run --rm $(IMAGE) terragrunt --version | grep -E "^terragrunt[[:space:]]*version[[:space:]]*v?$(TG_VERSION)\.[.0-9]+$$"; then \
-			echo "Failed"; \
-			exit 1; \
-		fi; \
-	fi; \
-	echo "Success"; \
-
 _test-run:
 	@echo "------------------------------------------------------------"
 	@echo "- Testing phpcs (success)"
