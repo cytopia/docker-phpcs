@@ -2,9 +2,10 @@ ifneq (,)
 .error This Makefile requires GNU Make.
 endif
 
-.PHONY: build rebuild lint test _test-phpcs-version _test-php-version _test-run tag pull login push enter
+.PHONY: build rebuild lint test _test-phpcs-version _test-php-version _test-run _get-php-version tag pull login push enter
 
 CURRENT_DIR = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+CURRENT_PHP_VERSION =
 
 DIR = .
 FILE = Dockerfile
@@ -69,33 +70,16 @@ _test-phpcs-version:
 	fi; \
 	echo "Success"; \
 
-_test-php-version:
+_test-php-version: _get-php-version
 	@echo "------------------------------------------------------------"
 	@echo "- Testing correct PHP version"
 	@echo "------------------------------------------------------------"
-	@if [ "$(PHP)" = "latest" ]; then \
-		echo "Fetching latest version from GitHub"; \
-		LATEST="$$( \
-		curl -L -sS https://github.com/php/php-src/releases \
-			| tac | tac \
-			| grep -Eo '/php-[.0-9]+?\.[.0-9]+"' \
-			| grep -Eo '[.0-9]+' \
-			| sort -V \
-			| tail -1 \
-		)"; \
-		echo "Testing for latest: $${LATEST}"; \
-		if ! docker run --rm --entrypoint=php $(IMAGE) --version | head -1 | grep -E "^PHP[[:space:]]+$${LATEST}[[:space:]]"; then \
-			echo "Failed"; \
-			exit 1; \
-		fi; \
-	else \
-		echo "Testing for tag: $(PHP).x"; \
-		if ! docker run --rm --entrypoint=php $(IMAGE) --version | head -1 | grep -E "^PHP[[:space:]]+$(PHP)\.[.0-9]+[[:space:]]"; then \
-			echo "Failed"; \
-			exit 1; \
-		fi; \
+	@echo "Testing for tag: $(CURRENT_PHP_VERSION)"
+	@if ! docker run --rm --entrypoint=php $(IMAGE) --version | head -1 | grep -E "^PHP[[:space:]]+$(CURRENT_PHP_VERSION)([.0-9]+)?"; then \
+		echo "Failed"; \
+		exit 1; \
 	fi; \
-	echo "Success"; \
+	echo "Success";
 
 _test-run:
 	@echo "------------------------------------------------------------"
@@ -119,9 +103,13 @@ tag:
 	docker tag $(IMAGE) $(IMAGE):$(TAG)
 
 pull:
+	@echo "Pull base image"
 	@grep -E '^\s*FROM' Dockerfile \
 		| sed -e 's/^FROM//g' -e 's/[[:space:]]*as[[:space:]]*.*$$//g' \
+		| head -1 \
 		| xargs -n1 docker pull;
+	@echo "Pull target image"
+	docker pull php:$(PHP)-cli-alpine
 
 login:
 	yes | docker login --username $(USER) --password $(PASS)
@@ -132,3 +120,18 @@ push:
 
 enter:
 	docker run --rm --name $(subst /,-,$(IMAGE)) -it --entrypoint=/bin/sh $(ARG) $(IMAGE):$(TAG)
+
+# Fetch latest available PHP version for cli-alpine
+_get-php-version:
+	$(eval CURRENT_PHP_VERSION = $(shell \
+		if [ "$(PHP)" = "latest" ]; then \
+			curl -L -sS https://hub.docker.com/api/content/v1/products/images/php \
+				| tac | tac \
+				| grep -Eo '`[.0-9]+-cli-alpine' \
+				| grep -Eo '[.0-9]+' \
+				| sort -u \
+				| tail -1; \
+		else \
+			echo $(PHP); \
+		fi; \
+	))
