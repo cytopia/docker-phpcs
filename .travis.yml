@@ -39,6 +39,9 @@ env:
     - PHPCS=2      PHP=7.3
     - PHPCS=3      PHP=7.3
     - PHPCS=latest PHP=7.3
+    - PHPCS=2      PHP=7.4
+    - PHPCS=3      PHP=7.4
+    - PHPCS=latest PHP=7.4
     - PHPCS=2      PHP=latest
     - PHPCS=3      PHP=latest
     - PHPCS=latest PHP=latest
