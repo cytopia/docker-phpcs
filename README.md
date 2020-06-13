@@ -96,7 +96,7 @@ the root of your project.
 
 ## Usage
 
-
+### Basic
 ```bash
 $ docker run --rm -v $(pwd):/data cytopia/phpcs .
 
@@ -112,6 +112,21 @@ FOUND 4 ERRORS AFFECTING 3 LINES
 ----------------------------------------------------------------------
 PHPCBF CAN FIX THE 3 MARKED SNIFF VIOLATIONS AUTOMATICALLY
 ----------------------------------------------------------------------
+```
+
+### Custom standard
+Custom standards must be mounted inside the container to `/usr/bin/CodeSniffer.conf `
+```bash
+# Via command line
+$ docker run --rm -v $(pwd):/data -v CodeSniffer.conf:/usr/bin/CodeSniffer.conf cytopia/phpcs .
+```
+```yaml
+# Docker compose
+phpcs:
+  image: cytopia/phpcs
+  volumes:
+    - .:/data
+    - CodeSniffer.conf:/usr/bin/CodeSniffer.conf
 ```
 
 
