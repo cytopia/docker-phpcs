@@ -58,6 +58,8 @@ Docker images for PHP CodeSniffer come with all available PHP versions. In doubt
 | Docker tag      | phpcs version         | PHP version           |
 |-----------------|-----------------------|-----------------------|
 | `latest`        | latest stable         | latest stable         |
+| `latest-php8.1` | latest stable         | latest stable `8.1.x` |
+| `latest-php8.0` | latest stable         | latest stable `8.0.x` |
 | `latest-php7.4` | latest stable         | latest stable `7.4.x` |
 | `latest-php7.3` | latest stable         | latest stable `7.3.x` |
 | `latest-php7.2` | latest stable         | latest stable `7.2.x` |
@@ -69,6 +71,8 @@ Docker images for PHP CodeSniffer come with all available PHP versions. In doubt
 | Docker tag      | phpcs version         | PHP version           |
 |-----------------|-----------------------|-----------------------|
 | `3`             | latest stable `3.x.x` | latest stable         |
+| `3-php8.1`      | latest stable `3.x.x` | latest stable `8.1.x` |
+| `3-php8.0`      | latest stable `3.x.x` | latest stable `8.0.x` |
 | `3-php7.4`      | latest stable `3.x.x` | latest stable `7.4.x` |
 | `3-php7.3`      | latest stable `3.x.x` | latest stable `7.3.x` |
 | `3-php7.2`      | latest stable `3.x.x` | latest stable `7.2.x` |
