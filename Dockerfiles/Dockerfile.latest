@@ -1,5 +1,5 @@
-ARG PHP
-FROM php:7.3 as builder
+ARG PHP_VERSION
+FROM php:${PHP_VERSION} as builder
 
 # Install build dependencies
 RUN set -eux \
@@ -10,20 +10,20 @@ RUN set -eux \
 		git \
 	&& git clone https://github.com/squizlabs/PHP_CodeSniffer
 
-ARG PHPCS
+ARG PCS_VERSION
 RUN set -eux \
 	&& cd PHP_CodeSniffer \
-	&& if [ "${PHPCS}" = "latest" ]; then \
+	&& if [ "${PCS_VERSION}" = "latest" ]; then \
 		VERSION="$( git describe --abbrev=0 --tags )"; \
 	else \
-		VERSION="$( git tag | grep -E "^v?${PHPCS}\.[.0-9]+\$" | sort -V | tail -1 )"; \
+		VERSION="$( git tag | grep -E "^v?${PCS_VERSION}\.[.0-9]+\$" | sort -V | tail -1 )"; \
 	fi \
 	&& curl -sS -L https://github.com/squizlabs/PHP_CodeSniffer/releases/download/${VERSION}/phpcs.phar -o /phpcs.phar \
 	&& chmod +x /phpcs.phar \
 	&& mv /phpcs.phar /usr/bin/phpcs
 
 
-FROM php:${PHP} as production
+FROM php:${PHP_VERSION} as production
 LABEL \
 	maintainer="cytopia <cytopia@everythingcli.org>" \
 	repo="https://github.com/cytopia/docker-phpcs"
