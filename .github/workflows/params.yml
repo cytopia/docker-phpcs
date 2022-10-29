@@ -37,9 +37,6 @@ env:
             "PCS-3  PHP-7.0",
             "PCS-3  PHP-5.6",
 
-            "PCS-2  PHP-latest",
-            "PCS-2  PHP-8.1",
-            "PCS-2  PHP-8.0",
             "PCS-2  PHP-7.4",
             "PCS-2  PHP-7.3",
             "PCS-2  PHP-7.2",
