@@ -45,17 +45,7 @@ env:
             "PCS-2  PHP-7.2",
             "PCS-2  PHP-7.1",
             "PCS-2  PHP-7.0",
-            "PCS-2  PHP-5.6",
-
-            "PCS-1  PHP-latest",
-            "PCS-1  PHP-8.1",
-            "PCS-1  PHP-8.0",
-            "PCS-1  PHP-7.4",
-            "PCS-1  PHP-7.3",
-            "PCS-1  PHP-7.2",
-            "PCS-1  PHP-7.1",
-            "PCS-1  PHP-7.0",
-            "PCS-1  PHP-5.6"
+            "PCS-2  PHP-5.6"
         ],
         "FLAVOUR": ["latest"],
         "ARCH":    ["linux/amd64", "linux/386", "linux/arm64"]
