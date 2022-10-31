@@ -118,8 +118,8 @@ docker-pull-base-image:
 	@echo "################################################################################"
 	@echo "# Pulling Base Image php:$(PHP_VERSION) (platform: $(ARCH))"
 	@echo "################################################################################"
-	@echo "docker pull --platform $(ARCH) php:$(IMG_VERSION)alpine"; \
-	while ! docker pull --platform $(ARCH) php:$(IMG_VERSION)alpine; do sleep 1; done \
+	@echo "docker pull --platform $(ARCH) php:$(IMG_VERSION)cli-alpine"; \
+	while ! docker pull --platform $(ARCH) php:$(IMG_VERSION)cli-alpine; do sleep 1; done \
 
 
 # -------------------------------------------------------------------------------------------------

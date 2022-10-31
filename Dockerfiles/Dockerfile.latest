@@ -1,5 +1,5 @@
 ARG PHP_VERSION
-FROM php:${PHP_VERSION}alpine as builder
+FROM php:${PHP_VERSION}cli-alpine as builder
 
 # Install build dependencies
 RUN set -eux \
@@ -22,7 +22,7 @@ RUN set -eux \
 	&& mv /phpcs.phar /usr/bin/phpcs
 
 
-FROM php:${PHP_VERSION}alpine as production
+FROM php:${PHP_VERSION}cli-alpine as production
 LABEL \
 	maintainer="cytopia <cytopia@everythingcli.org>" \
 	repo="https://github.com/cytopia/docker-phpcs"
