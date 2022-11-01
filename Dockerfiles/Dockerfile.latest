@@ -5,6 +5,8 @@ FROM php:${PHP_VERSION}cli-alpine as builder
 RUN set -eux \
 	&& apk add --no-cache \
 		ca-certificates \
+		# coreutils add 'sort -V'
+		coreutils \
 		curl \
 		git \
 	&& git clone https://github.com/squizlabs/PHP_CodeSniffer
@@ -19,7 +21,9 @@ RUN set -eux \
 	fi \
 	&& curl -sS -L https://github.com/squizlabs/PHP_CodeSniffer/releases/download/${VERSION}/phpcs.phar -o /phpcs.phar \
 	&& chmod +x /phpcs.phar \
-	&& mv /phpcs.phar /usr/bin/phpcs
+	&& mv /phpcs.phar /usr/bin/phpcs \
+	\
+	&& phpcs --version
 
 
 FROM php:${PHP_VERSION}cli-alpine as production
