@@ -42,6 +42,11 @@ else
 	IMG_VERSION = $(PHP_VERSION)-
 endif
 
+# Extract Image version
+ifeq ($(strip $(PHP_VERSION)),latest)
+	IMG_VERSION = ""
+endif
+
 # Building from master branch: Tag == 'latest'
 ifeq ($(strip $(TAG)),latest)
 	ifeq ($(strip $(VERSION)),latest)
@@ -119,7 +124,17 @@ docker-pull-base-image:
 	@echo "# Pulling Base Image php:$(IMG_VERSION)cli-alpine (platform: $(ARCH))"
 	@echo "################################################################################"
 	@echo "docker pull --platform $(ARCH) php:$(IMG_VERSION)cli-alpine"; \
-	while ! docker pull --platform $(ARCH) php:$(IMG_VERSION)cli-alpine; do sleep 1; done \
+	SUCC=0; \
+	for count in $$(seq 10); do \
+		if docker pull --platform $(ARCH) php:$(IMG_VERSION)cli-alpine; then \
+			SUCC=1; \
+			break; \
+		fi; \
+	done; \
+	if [ "$${SUCC}" != "1" ]; then \
+		echo "Failed."; \
+		exit 1; \
+	fi;
 
 
 # -------------------------------------------------------------------------------------------------
