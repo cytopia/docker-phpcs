@@ -218,7 +218,7 @@ _test-run:
 .PHONY: _get-php-version
 _get-php-version:
 	$(eval CURRENT_PHP_VERSION = $(shell \
-		if [ "$(PHP)" = "latest" ]; then \
+		if [ "$(PHP_VERSION)" = "latest" ]; then \
 			curl -L -sS https://hub.docker.com/api/content/v1/products/images/php \
 				| tac | tac \
 				| grep -Eo '`[.0-9]+-cli-alpine' \
@@ -226,6 +226,6 @@ _get-php-version:
 				| sort -u \
 				| tail -1; \
 		else \
-			echo $(PHP); \
+			echo $(PHP_VERSION); \
 		fi; \
 	))
