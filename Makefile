@@ -16,6 +16,7 @@ include $(MAKEFILES)
 # Set default Target
 .DEFAULT_GOAL := help
 
+DOCKER_PULL_VARIABLES = PHP_IMG_TAG=$(PHP_IMG_TAG)
 
 # -------------------------------------------------------------------------------------------------
 # Default configuration
@@ -32,19 +33,20 @@ FILE       = Dockerfile.${FLAVOUR}
 DIR        = Dockerfiles
 
 # Extract PHP- and PCS- version from VERSION string
+PHP_IMG_TAG = "cli-alpine"
 ifeq ($(strip $(VERSION)),latest)
 	PHP_VERSION = latest
 	PCS_VERSION = latest
-	IMG_VERSION = ""
+	PHP_IMG_TAG = "cli-alpine"
 else
 	PHP_VERSION = $(subst PHP-,,$(shell echo "$(VERSION)" | grep -Eo 'PHP-([.0-9]+|latest)'))
 	PCS_VERSION = $(subst PCS-,,$(shell echo "$(VERSION)" | grep -Eo 'PCS-([.0-9]+|latest)'))
-	IMG_VERSION = $(PHP_VERSION)-
+	PHP_IMG_TAG = $(PHP_VERSION)-cli-alpine
 endif
 
 # Extract Image version
 ifeq ($(strip $(PHP_VERSION)),latest)
-	IMG_VERSION = ""
+	PHP_IMG_TAG = "cli-alpine"
 endif
 
 # Building from master branch: Tag == 'latest'
@@ -116,38 +118,16 @@ help:
 
 
 # -------------------------------------------------------------------------------------------------
-#  Target Overrides
-# -------------------------------------------------------------------------------------------------
-.PHONY: docker-pull-base-image
-docker-pull-base-image:
-	@echo "################################################################################"
-	@echo "# Pulling Base Image php:$(IMG_VERSION)cli-alpine (platform: $(ARCH))"
-	@echo "################################################################################"
-	@echo "docker pull --platform $(ARCH) php:$(IMG_VERSION)cli-alpine"; \
-	SUCC=0; \
-	for count in $$(seq 10); do \
-		if docker pull --platform $(ARCH) php:$(IMG_VERSION)cli-alpine; then \
-			SUCC=1; \
-			break; \
-		fi; \
-	done; \
-	if [ "$${SUCC}" != "1" ]; then \
-		echo "Failed."; \
-		exit 1; \
-	fi;
-
-
-# -------------------------------------------------------------------------------------------------
 #  Docker Targets
 # -------------------------------------------------------------------------------------------------
 .PHONY: build
 build: ARGS+=--build-arg PCS_VERSION=$(PCS_VERSION)
-build: ARGS+=--build-arg PHP_VERSION=$(IMG_VERSION)
+build: ARGS+=--build-arg PHP_IMG_TAG=$(PHP_IMG_TAG)
 build: docker-arch-build
 
 .PHONY: rebuild
 rebuild: ARGS+=--build-arg PCS_VERSION=$(PCS_VERSION)
-rebuild: ARGS+=--build-arg PHP_VERSION=$(IMG_VERSION)
+rebuild: ARGS+=--build-arg PHP_IMG_TAG=$(PHP_IMG_TAG)
 rebuild: docker-arch-rebuild
 
 .PHONY: push
